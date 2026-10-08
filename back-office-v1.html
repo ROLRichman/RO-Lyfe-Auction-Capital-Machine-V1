@@ -1,1 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>RO'Lyfe Back Office — V1</title>
+  <link rel="stylesheet" href="css/back-office-v1.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">RO</div>
+      <div class="brand-copy">
+        <div class="brand-title">RO’Lyfe Back Office</div>
+        <div class="brand-sub">Property • Capital • Markets • Recovery</div>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn-link" href="#markets">Markets</a>
+      <a class="btn-link" href="#calculators">Calculators</a>
+      <a class="btn-link" href="#vault">Vault</a>
+      <a class="btn-link" href="https://github.com/ROLRichman/ro-lyfe-auction-capital-machine/tree/main" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    </div>
+  </div>
+</header>
 
+<main class="container shell">
+  <section class="card">
+    <div class="card-head">
+      <div>
+        <div class="card-title">Command Layer</div>
+        <div class="card-note">Back-office console — accuracy, stability and speed before decoration.</div>
+      </div>
+      <span id="signalPill" class="pill warn">NEUTRAL</span>
+    </div>
+    <div class="card-body">
+      <div class="meta-grid">
+        <div class="kpi"><div class="kpi-label">Property</div><div class="kpi-value">Research → Underwrite</div></div>
+        <div class="kpi"><div class="kpi-label">Capital</div><div class="kpi-value">LTV / LTC / Cash</div></div>
+        <div class="kpi"><div class="kpi-label">Market</div><div class="kpi-value">Chart → Confirm</div></div>
+        <div class="kpi"><div class="kpi-label">Decision</div><div class="kpi-value">GO / CAUTION / PASS</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="markets" class="grid grid-main">
+    <div class="card">
+      <div class="card-head">
+        <div class="chart-status">
+          <div>
+            <div class="card-title">TradingView Market Chart</div>
+            <div class="card-note" id="symbolStatus">NASDAQ:AAPL • Stock-first confirmation</div>
+          </div>
+        </div>
+        <div class="row" style="display:flex;gap:7px;align-items:center">
+          <input id="symbolInput" value="NASDAQ:AAPL" style="width:145px" aria-label="TradingView symbol">
+          <button id="setSymbol">Set</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="toolbar">
+          <div class="muted">6M/1D → 4H → 1H → 15M → 5M</div>
+          <button class="tf active">1D</button><button class="tf">4H</button><button class="tf">1H</button>
+          <button class="tf">15M</button><button class="tf">5M</button><button class="tf">6M</button>
+          <a class="btn-link" href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer">Open ↗</a>
+        </div>
+        <div id="tvChart" class="widget-box chart-box"></div>
+      </div>
+    </div>
+
+    <aside class="stack">
+      <div class="card">
+        <div class="card-head">
+          <div><div class="card-title">RO’Lyfe Signal Gauge</div><div class="card-note">Manual confirmation layer</div></div>
+        </div>
+        <div class="card-body stack">
+          <div class="gauge">
+            <div class="gauge-arc"></div>
+            <div class="gauge-mask"></div>
+            <div class="gauge-needle" id="signalNeedle"></div>
+            <div class="gauge-center"><div><div id="signalScore" class="score">0</div><div class="muted">score</div></div></div>
+          </div>
+          <div style="text-align:center;font-weight:900" id="signalLabel">NEUTRAL</div>
+          <div class="check-grid">
+            <label class="check"><input type="checkbox" data-signal="priceAbove50"> Price &gt; 50 MA</label>
+            <label class="check"><input type="checkbox" data-signal="priceAbove200"> Price &gt; 200 MA</label>
+            <label class="check"><input type="checkbox" data-signal="aboveVwap"> Above VWAP</label>
+            <label class="check"><input type="checkbox" data-signal="rsiBullish"> RSI bullish</label>
+            <label class="check"><input type="checkbox" data-signal="macdBullish"> MACD bullish</label>
+            <label class="check"><input type="checkbox" data-signal="stochBullish"> Stoch bullish</label>
+            <label class="check"><input type="checkbox" data-signal="volumeConfirm"> Volume confirms</label>
+          </div>
+          <div class="notice">Local score is decision support. TradingView supplies the external chart and Technical Analysis rating; neither is a guarantee of direction.</div>
+          <div id="tvTechnical" class="widget-box ta-box"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><div class="card-title">Schwab Network</div><div class="card-note">Market news & live programming</div></div></div>
+        <div class="card-body">
+          <a class="btn-link" style="width:100%" href="https://www.schwab.com/schwab-network" target="_blank" rel="noopener noreferrer">Open Schwab Network ↗</a>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><div><div class="card-title">TradingView Top Stories</div><div class="card-note">Symbol-focused news feed</div></div></div>
+    <div class="card-body"><div id="tvTopStories" class="widget-box news-box"></div></div>
+  </section>
+
+  <section class="grid grid-2">
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Quick Ladder Engine</div><div class="card-note">Stock-first risk ladder</div></div></div>
+      <div class="card-body stack">
+        <div class="form-grid">
+          <div class="field"><label for="ladderEntry">Entry</label><input id="ladderEntry" type="number" step="0.01" value="10"></div>
+          <div class="field"><label for="ladderStop">Stop / Invalidation</label><input id="ladderStop" type="number" step="0.01" value="9"></div>
+        </div>
+        <div class="ladder">
+          <div class="ladder-item"><div class="ladder-label">Risk</div><div class="ladder-value" id="risk">$1.00</div></div>
+          <div class="ladder-item"><div class="ladder-label">1R</div><div class="ladder-value" id="r1">$11.00</div></div>
+          <div class="ladder-item"><div class="ladder-label">2R</div><div class="ladder-value" id="r2">$12.00</div></div>
+          <div class="ladder-item"><div class="ladder-label">3R / Runner</div><div class="ladder-value" id="r3">$13.00</div></div>
+        </div>
+        <div class="muted">Trade the stock. Define invalidation first. Execute with the option after confirmation.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Weather / Execution</div><div class="card-note">External links keep third-party pages from breaking the layout.</div></div></div>
+      <div class="card-body link-grid">
+        <a class="link-btn" href="https://weather.com/" target="_blank" rel="noopener noreferrer"><span>Weather.com</span><span>OPEN ↗</span></a>
+        <a class="link-btn" href="https://www.weather.gov/" target="_blank" rel="noopener noreferrer"><span>NOAA</span><span>OPEN ↗</span></a>
+        <a class="link-btn" href="https://trade.thinkorswim.com/charts?symbol=SPX" target="_blank" rel="noopener noreferrer"><span>thinkorswim</span><span>OPEN ↗</span></a>
+        <a class="link-btn" href="https://client.schwab.com/Areas/Access/Login?SessionTimeOut=y&ReturnUrl=%2fretail%2fresearch%2f#/markets" target="_blank" rel="noopener noreferrer"><span>Schwab</span><span>LOGIN ↗</span></a>
+        <a class="link-btn" href="https://www.sofi.com/learn/content/foreclosure-rates-for-50-state" target="_blank" rel="noopener noreferrer"><span>Foreclosure Research</span><span>OPEN ↗</span></a>
+        <button id="openRegrid" style="text-align:left"><span>Regrid</span> <span class="muted">OPEN ↗</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="calculators" class="card">
+    <div class="card-head">
+      <div><div class="card-title">RO’Lyfe Financial Toolbox</div><div class="card-note">Standalone modules — each calculator is portable.</div></div>
+    </div>
+    <div class="card-body">
+      <div class="calculator-tabs">
+        <button data-calc-tab="overage" class="active">Overage</button>
+        <button data-calc-tab="threeTier">Three-Tier Offer</button>
+        <button data-calc-tab="privateMoney">Private Money</button>
+        <button data-calc-tab="maxBid">Max Bid</button>
+        <button data-calc-tab="fixFlip">Fix & Flip</button>
+        <button data-calc-tab="taxLienYield">Tax Lien Yield</button>
+        <button data-calc-tab="redemptionYield">Redemption Yield</button>
+      </div>
+
+      <div id="calc-overage" class="calc-panel active" style="margin-top:10px">
+        <div class="form-grid">
+          <div class="field"><label>Sale Proceeds</label><input id="oSale" type="number" value="250000"></div>
+          <div class="field"><label>Secured Liens</label><input id="oLiens" type="number" value="125000"></div>
+          <div class="field"><label>Taxes</label><input id="oTaxes" type="number" value="5000"></div>
+          <div class="field"><label>Fees / Costs</label><input id="oFees" type="number" value="5000"></div>
+          <div class="field"><label>Other Claims</label><input id="oClaims" type="number" value="10000"></div>
+          <div class="field"><label>Compensation %</label><input id="oPct" type="number" value="20" min="0" max="100"></div>
+        </div>
+        <div class="output-grid">
+          <div class="output"><div class="output-label">Estimated Surplus</div><div class="output-value" id="oSurplus"></div></div>
+          <div class="output"><div class="output-label">Potential Gross Compensation</div><div class="output-value" id="oComp"></div></div>
+          <div class="output"><div class="output-label">Status</div><div class="output-value" id="oStatus"></div></div>
+        </div>
+        <div class="notice" style="margin-top:10px">20–40% is a configurable business input. Verify claimant rights, agreement terms and applicable rules before relying on a fee.</div>
+      </div>
+
+      <div id="calc-threeTier" class="calc-panel" style="margin-top:10px">
+        <div class="form-grid">
+          <div class="field"><label>ARV</label><input id="tArv" type="number" value="250000"></div>
+          <div class="field"><label>Cash % ARV</label><input id="tCashPct" type="number" value="50"></div>
+          <div class="field"><label>Seller Carry % ARV</label><input id="tCarryPct" type="number" value="65"></div>
+          <div class="field"><label>Down % Price</label><input id="tDownPct" type="number" value="5"></div>
+          <div class="field"><label>Carry Rate %</label><input id="tCarryRate" type="number" value="5"></div>
+          <div class="field"><label>Carry Term (yrs)</label><input id="tCarryTerm" type="number" value="4"></div>
+          <div class="field"><label>Seller Financing % ARV</label><input id="tFinPct" type="number" value="75"></div>
+          <div class="field"><label>Financing Rate %</label><input id="tFinRate" type="number" value="6"></div>
+          <div class="field"><label>Balloon (yrs)</label><input id="tBalloon" type="number" value="5"></div>
+          <div class="field"><label>Amortization (yrs)</label><input id="tAmort" type="number" value="30"></div>
+        </div>
+        <div class="output-grid">
+          <div class="output"><div class="output-label">All Cash</div><div class="output-value" id="tCash"></div></div>
+          <div class="output"><div class="output-label">Carry Price / Down</div><div class="output-value"><span id="tCarryPrice"></span> / <span id="tCarryDown"></span></div></div>
+          <div class="output"><div class="output-label">Carry Monthly</div><div class="output-value" id="tCarryPay"></div></div>
+          <div class="output"><div class="output-label">Carry Balloon</div><div class="output-value" id="tCarryBalloon"></div></div>
+          <div class="output"><div class="output-label">Seller Financing Price</div><div class="output-value" id="tFinPrice"></div></div>
+          <div class="output"><div class="output-label">Seller Financing Monthly</div><div class="output-value" id="tFinPay"></div></div>
+          <div class="output"><div class="output-label">Seller Financing Balloon</div><div class="output-value" id="tFinBalloon"></div></div>
+        </div>
+        <div class="notice" style="margin-top:10px">Negotiation reference: low $110K • target $125K • high $130K on the $250K example. This is a range, not a universal valuation rule.</div>
+      </div>
+
+      <div id="calc-privateMoney" class="calc-panel" style="margin-top:10px">
+        <div class="form-grid">
+          <div class="field"><label>ARV</label><input id="pArv" type="number" value="250000"></div>
+          <div class="field"><label>Purchase</label><input id="pPurchase" type="number" value="125000"></div>
+          <div class="field"><label>Rehab</label><input id="pRehab" type="number" value="60000"></div>
+          <div class="field"><label>Closing</label><input id="pClosing" type="number" value="5000"></div>
+          <div class="field"><label>Holding</label><input id="pHolding" type="number" value="5000"></div>
+          <div class="field"><label>Selling</label><input id="pSelling" type="number" value="15000"></div>
+          <div class="field"><label>Contingency</label><input id="pContingency" type="number" value="10000"></div>
+          <div class="field"><label>Other</label><input id="pOther" type="number" value="0"></div>
+          <div class="field"><label>Max LTV %</label><input id="pLtv" type="number" value="70"></div>
+          <div class="field"><label>Max LTC %</label><input id="pLtc" type="number" value="90"></div>
+          <div class="field"><label>Interest %</label><input id="pRate" type="number" value="12"></div>
+          <div class="field"><label>Points %</label><input id="pPoints" type="number" value="2"></div>
+          <div class="field"><label>Term (months)</label><input id="pTerm" type="number" value="12"></div>
+        </div>
+        <div class="output-grid">
+          <div class="output"><div class="output-label">Project Basis</div><div class="output-value" id="pBasis"></div></div>
+          <div class="output"><div class="output-label">Loan Amount</div><div class="output-value" id="pLoan"></div></div>
+          <div class="output"><div class="output-label">Borrower Cash Required</div><div class="output-value" id="pCash"></div></div>
+          <div class="output"><div class="output-label">Lender Gross Revenue</div><div class="output-value" id="pLenderRev"></div></div>
+          <div class="output"><div class="output-label">Project Profit</div><div class="output-value" id="pProfit"></div></div>
+        </div>
+      </div>
+
+      <div id="calc-maxBid" class="calc-panel" style="margin-top:10px">
+        <div class="form-grid">
+          <div class="field"><label>ARV</label><input id="mArv" type="number" value="300000"></div>
+          <div class="field"><label>Rehab</label><input id="mRehab" type="number" value="50000"></div>
+          <div class="field"><label>Holding</label><input id="mHolding" type="number" value="10000"></div>
+          <div class="field"><label>Acq / Closing</label><input id="mClose" type="number" value="10000"></div>
+          <div class="field"><label>Selling / Disposition</label><input id="mSelling" type="number" value="15000"></div>
+          <div class="field"><label>Financing</label><input id="mFinancing" type="number" value="5000"></div>
+          <div class="field"><label>Contingency</label><input id="mContingency" type="number" value="10000"></div>
+          <div class="field"><label>Other</label><input id="mOther" type="number" value="0"></div>
+          <div class="field"><label>Required Profit</label><input id="mProfit" type="number" value="40000"></div>
+          <div class="field"><label>Current Bid</label><input id="mBid" type="number" value="150000"></div>
+        </div>
+        <div class="output-grid">
+          <div class="output"><div class="output-label">Max Bid</div><div class="output-value" id="mMax"></div></div>
+          <div class="output"><div class="output-label">Bid Room</div><div class="output-value" id="mRoom"></div></div>
+          <div class="output"><div class="output-label">Status</div><div class="output-value" id="mStatus"></div></div>
+        </div>
+      </div>
+
+      <div id="calc-fixFlip" class="calc-panel" style="margin-top:10px">
+        <div class="form-grid">
+          <div class="field"><label>ARV</label><input id="fArv" type="number" value="300000"></div>
+          <div class="field"><label>Purchase</label><input id="fPurchase" type="number" value="120000"></div>
+          <div class="field"><label>Rehab</label><input id="fRehab" type="number" value="60000"></div>
+          <div class="field"><label>Closing</label><input id="fClosing" type="number" value="5000"></div>
+          <div class="field"><label>Holding</label><input id="fHolding" type="number" value="10000"></div>
+          <div class="field"><label>Selling</label><input id="fSelling" type="number" value="18000"></div>
+          <div class="field"><label>Financing</label><input id="fFinancing" type="number" value="7000"></div>
+          <div class="field"><label>Contingency</label><input id="fContingency" type="number" value="10000"></div>
+          <div class="field"><label>Other</label><input id="fOther" type="number" value="0"></div>
+        </div>
+        <div class="output-grid">
+          <div class="output"><div class="output-label">Project Basis</div><div class="output-value" id="fBasis"></div></div>
+          <div class="output"><div class="output-label">Estimated Profit</div><div class="output-value" id="fProfit"></div></div>
+          <div class="output"><div class="output-label">Estimated ROI</div><div class="output-value" id="fROI"></div></div>
+        </div>
+      </div>
+
+      <div id="calc-taxLienYield" class="calc-panel" style="margin-top:10px">
+        <div class="form-grid">
+          <div class="field"><label>Principal</label><input id="yPrincipal" type="number" value="10000"></div>
+          <div class="field"><label>Annual Interest %</label><input id="yRate" type="number" value="12"></div>
+          <div class="field"><label>Hold (months)</label><input id="yMonths" type="number" value="12"></div>
+          <div class="field"><label>Fees</label><input id="yFees" type="number" value="100"></div>
+        </div>
+        <div class="output-grid">
+          <div class="output"><div class="output-label">Interest</div><div class="output-value" id="yInterest"></div></div>
+          <div class="output"><div class="output-label">Net Gain</div><div class="output-value" id="yGain"></div></div>
+          <div class="output"><div class="output-label">Annualized Yield</div><div class="output-value" id="yYield"></div></div>
+        </div>
+        <div class="notice" style="margin-top:10px">Research calculator only. Jurisdiction-specific tax-lien rules may use different interest/penalty methods.</div>
+      </div>
+
+      <div id="calc-redemptionYield" class="calc-panel" style="margin-top:10px">
+        <div class="form-grid">
+          <div class="field"><label>Invested</label><input id="rInvested" type="number" value="10000"></div>
+          <div class="field"><label>Redemption Amount</label><input id="rRedemption" type="number" value="11000"></div>
+          <div class="field"><label>Days Held</label><input id="rDays" type="number" value="180"></div>
+          <div class="field"><label>Fees</label><input id="rFees" type="number" value="100"></div>
+        </div>
+        <div class="output-grid">
+          <div class="output"><div class="output-label">Net Proceeds</div><div class="output-value" id="rNet"></div></div>
+          <div class="output"><div class="output-label">Net Gain</div><div class="output-value" id="rGain"></div></div>
+          <div class="output"><div class="output-label">Annualized Yield</div><div class="output-value" id="rYield"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vault" class="card">
+    <div class="card-head">
+      <div><div class="card-title">Document / Link Vault</div><div class="card-note">Links are organized by operating lane.</div></div>
+      <select id="linkCategory" style="width:180px">
+        <option>All</option><option>Core</option><option>Land / Parcel</option><option>Real Estate</option>
+        <option>Auction / Tax</option><option>Philadelphia</option><option>Capital</option><option>Automation</option>
+        <option>Trading</option><option>Weather / Research</option><option>Market Research</option>
+        <option>Relocation</option><option>Affiliate / Education</option><option>Robotics</option>
+      </select>
+    </div>
+    <div class="card-body"><div id="linkVault" class="link-grid"></div></div>
+  </section>
+
+  <section class="grid grid-2">
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Regrid Parcel Intelligence</div><div class="card-note">Safe integration path: public Project / secure API layer.</div></div></div>
+      <div class="card-body stack">
+        <div class="iframe-placeholder" id="regridArea">
+          <div>
+            <div style="font-weight:850;color:var(--text);margin-bottom:5px">No public Regrid Project URL configured</div>
+            <div class="muted">Use a permitted public Regrid Project for an embedded map. Do not place an API token in GitHub Pages JavaScript.</div>
+            <div style="margin-top:10px"><button id="openRegrid">Open Regrid ↗</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div><div class="card-title">Land Intelligence Lane</div><div class="card-note">Vacant lot → parcel → buildability → builder → capital.</div></div></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Stage</th><th>Question</th><th>Output</th></tr></thead>
+            <tbody>
+              <tr><td>Vacant Lot</td><td>Is the parcel actually vacant?</td><td>VACANT / VERIFY</td></tr>
+              <tr><td>Parcel</td><td>Who owns it?</td><td>OWNER / RECORD</td></tr>
+              <tr><td>Buildability</td><td>Can something be built?</td><td>BUILDABLE / REVIEW</td></tr>
+              <tr><td>Tax</td><td>Are taxes current?</td><td>CURRENT / DELINQUENT</td></tr>
+              <tr><td>Demand</td><td>Who wants the land?</td><td>BUILDER / CONTRACTOR</td></tr>
+              <tr><td>Economics</td><td>What can the deal support?</td><td>MAX LOT PRICE</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><div><div class="card-title">338 Lake Dr — Research Gate</div><div class="card-note">Ft. Walton Beach, FL 32548</div></div><span class="pill warn">RESEARCH REQUIRED</span></div>
+    <div class="card-body">
+      <div class="meta-grid">
+        <div class="kpi"><div class="kpi-label">ARV</div><div class="kpi-value">UNVERIFIED</div></div>
+        <div class="kpi"><div class="kpi-label">Comps</div><div class="kpi-value">REQUIRED</div></div>
+        <div class="kpi"><div class="kpi-label">Title</div><div class="kpi-value">REQUIRED</div></div>
+        <div class="kpi"><div class="kpi-label">Tax / Redemption</div><div class="kpi-value">REQUIRED</div></div>
+      </div>
+      <div class="notice" style="margin-top:10px">Do not auto-approve from current bid, assessed value or Zestimate alone.</div>
+    </div>
+  </section>
+
+  <div class="footer">RO’Lyfe Back Office V1 • Keep historical backups intact • Decision-support only.</div>
+</main>
+
+<script src="data/calculator-rules.js"></script>
+<script src="data/regrid-config.js"></script>
+<script src="data/tax-yield-state-reference.js"></script>
+<script src="data/county-research-rules.js"></script>
+<script src="data/link-vault.js"></script>
+
+<script src="calculators/overage-calculator.js"></script>
+<script src="calculators/three-tier-offer-calculator.js"></script>
+<script src="calculators/private-money-calculator.js"></script>
+<script src="calculators/max-bid-calculator.js"></script>
+<script src="calculators/fix-flip-calculator.js"></script>
+<script src="calculators/tax-lien-yield-calculator.js"></script>
+<script src="calculators/redemption-yield-calculator.js"></script>
+<script src="calculators/calculator-registry.js"></script>
+
+<script src="js/calculator-router.js"></script>
+<script>
+  window.ROLyfeTradingViewSymbol = "NASDAQ:AAPL";
+</script>
+<script src="js/tradingview-widgets.js"></script>
+<script src="js/county-research-engine.js"></script>
+<script src="js/back-office-v1.js"></script>
+</body>
+</html>
